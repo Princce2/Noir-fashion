@@ -1,1 +1,5 @@
 node_modules/
+.agents/
+.claude/.claude/
+.agents/
+.claude/
