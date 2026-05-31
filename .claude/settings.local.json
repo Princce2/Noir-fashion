@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(higgsfield-generate)",
+      "Skill(higgsfield-generate:*)",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "Bash(curl -s -o /dev/null -w \"/ → %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"/collections → %{http_code}\\\\n\" http://localhost:3000/collections)",
+      "Bash(curl -s -o /dev/null -w \"/lookbook → %{http_code}\\\\n\" http://localhost:3000/lookbook)",
+      "Bash(curl -s -o /dev/null -w \"/about → %{http_code}\\\\n\" http://localhost:3000/about)",
+      "PowerShell(Get-Process -Name \"npm\",\"node\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process -Name \"node\",\"npm\" -ErrorAction SilentlyContinue)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ADMIN\\\\OneDrive\\\\Desktop\\\\Animated-page\\\\app\" -Recurse)",
+      "Bash(Select-Object FullName)",
+      "Bash(curl -s -o /dev/null -w \"/ → %{http_code}\\\\n\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w \"/collections → %{http_code}\\\\n\" http://localhost:5173/collections)",
+      "Bash(curl -s -o /dev/null -w \"/lookbook → %{http_code}\\\\n\" http://localhost:5173/lookbook)",
+      "Bash(curl -s -o /dev/null -w \"/about → %{http_code}\\\\n\" http://localhost:5173/about)",
+      "Bash(curl -s http://localhost:5173/src/components/Lookbook.jsx)",
+      "Bash(curl -s \"http://localhost:5173/\")",
+      "Bash(python -c \"import sys; d=sys.stdin.read\\(\\); print\\(len\\(d\\), 'bytes'\\)\")"
+    ]
+  }
+}
