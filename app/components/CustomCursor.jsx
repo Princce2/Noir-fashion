@@ -6,29 +6,53 @@ export default function CustomCursor() {
   const ring = useRef(null)
 
   useEffect(() => {
+    const handlers = []
+    
     const onMove = (e) => {
       gsap.to(dot.current,  { x: e.clientX, y: e.clientY, duration: 0, overwrite: true })
       gsap.to(ring.current, { x: e.clientX, y: e.clientY, duration: 0.18, ease: 'power2.out', overwrite: true })
     }
+    
     const onEnter = () => {
       gsap.to(ring.current, { scale: 2.4, borderColor: '#EAB308', opacity: 0.8, duration: 0.3 })
       gsap.to(dot.current,  { scale: 0, duration: 0.2 })
     }
+    
     const onLeave = () => {
       gsap.to(ring.current, { scale: 1, borderColor: '#CA8A04', opacity: 0.5, duration: 0.3 })
       gsap.to(dot.current,  { scale: 1, duration: 0.2 })
     }
-    const bind = () => {
+    
+    const attachListeners = () => {
+      // Remove old listeners first
+      handlers.forEach(({ el, enter, leave }) => {
+        el.removeEventListener('mouseenter', enter)
+        el.removeEventListener('mouseleave', leave)
+      })
+      handlers.length = 0
+      
+      // Attach new listeners
       document.querySelectorAll('a,button,[data-cursor]').forEach(el => {
         el.addEventListener('mouseenter', onEnter)
         el.addEventListener('mouseleave', onLeave)
+        handlers.push({ el, enter: onEnter, leave: onLeave })
       })
     }
+    
     window.addEventListener('mousemove', onMove)
-    bind()
-    const obs = new MutationObserver(bind)
+    attachListeners()
+    
+    const obs = new MutationObserver(attachListeners)
     obs.observe(document.body, { childList: true, subtree: true })
-    return () => { window.removeEventListener('mousemove', onMove); obs.disconnect() }
+    
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      handlers.forEach(({ el, enter, leave }) => {
+        el.removeEventListener('mouseenter', enter)
+        el.removeEventListener('mouseleave', leave)
+      })
+      obs.disconnect()
+    }
   }, [])
 
   return (

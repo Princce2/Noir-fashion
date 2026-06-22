@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import FashionVoid from "../images/Fashion-void.jpg";
 
 /*
   All images use loading="eager" — these are inside Framer Motion clipPath
@@ -25,7 +24,7 @@ const PANELS = [
     title: "Void & Volume",
     body: "Architectural cuts dissolve into fluid movement. A conversation between structure and surrender, night and near-nothing.",
     tag: "Vol. II",
-    img: FashionVoid,
+    img: "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=1200&h=900&dpr=1",
   },
   {
     id: 3,

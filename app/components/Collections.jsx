@@ -20,34 +20,63 @@ export default function Collections() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo('.col-heading > *', { y:50, opacity:0 }, {
-        y:0, opacity:1, stagger:0.12, duration:1.1, ease:'power3.out',
-        scrollTrigger:{ trigger:'.col-heading', start:'top 80%' },
-      })
-      gsap.fromTo('.col-card', { y:70, opacity:0, scale:0.96 }, {
-        y:0, opacity:1, scale:1, stagger:0.1, duration:1.1, ease:'power3.out',
-        scrollTrigger:{ trigger:'.col-grid', start:'top 78%' },
-      })
+      const headingEl = document.querySelector('.col-heading')
+      const gridEl = document.querySelector('.col-grid')
+      
+      if (headingEl) {
+        gsap.fromTo('.col-heading > *', { y:50, opacity:0 }, {
+          y:0, opacity:1, stagger:0.12, duration:1.1, ease:'power3.out',
+          scrollTrigger:{ trigger:headingEl, start:'top 80%', once:true },
+        })
+      }
+      
+      if (gridEl) {
+        gsap.fromTo('.col-card', { y:70, opacity:0, scale:0.96 }, {
+          y:0, opacity:1, scale:1, stagger:0.1, duration:1.1, ease:'power3.out',
+          scrollTrigger:{ trigger:gridEl, start:'top 78%', once:true },
+        })
+      }
 
-      // 3-D tilt on hover (desktop only)
-      document.querySelectorAll('.col-card').forEach(card => {
+      // 3-D tilt on hover (desktop only) - attach once, cleanup properly
+      const cards = document.querySelectorAll('.col-card')
+      const handlers = []
+      
+      cards.forEach(card => {
         const inner = card.querySelector('.col-inner')
         if (!inner) return
-        card.addEventListener('mousemove', e => {
+        
+        const onMove  = (e) => {
           const r  = card.getBoundingClientRect()
           const nx = ((e.clientX-r.left)/r.width  - 0.5) * 2
           const ny = ((e.clientY-r.top )/r.height - 0.5) * 2
           gsap.to(inner, { rotateY:nx*9, rotateX:-ny*7, duration:0.5, ease:'power2.out', transformPerspective:900 })
           const spot = card.querySelector('.col-spot')
-          if (spot) { spot.style.left=`${e.clientX-r.left}px`; spot.style.top=`${e.clientY-r.top}px`; gsap.to(spot,{opacity:1,duration:0.3}) }
-        })
-        card.addEventListener('mouseleave', () => {
+          if (spot) {
+            spot.style.left=`${e.clientX-r.left}px`
+            spot.style.top=`${e.clientY-r.top}px`
+            gsap.to(spot,{opacity:1,duration:0.3})
+          }
+        }
+        
+        const onLeave = () => {
           gsap.to(inner, { rotateY:0, rotateX:0, duration:0.9, ease:'power3.out' })
           const spot = card.querySelector('.col-spot')
           if (spot) gsap.to(spot, { opacity:0, duration:0.4 })
-        })
+        }
+        
+        card.addEventListener('mousemove', onMove)
+        card.addEventListener('mouseleave', onLeave)
+        handlers.push({ card, onMove, onLeave })
       })
+      
+      return () => {
+        handlers.forEach(({ card, onMove, onLeave }) => {
+          card.removeEventListener('mousemove', onMove)
+          card.removeEventListener('mouseleave', onLeave)
+        })
+      }
     }, sectionRef)
+    
     return () => ctx.revert()
   }, [])
 

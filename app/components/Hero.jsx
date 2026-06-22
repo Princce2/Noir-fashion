@@ -14,21 +14,29 @@ export default function Hero() {
   const ctaRef     = useRef(null)
   const scrollRef  = useRef(null)
 
-  // Magnetic buttons
   useEffect(() => {
     const cleanup = []
-    document.querySelectorAll('[data-magnetic]').forEach(btn => {
-      const onMove  = e => { const r=btn.getBoundingClientRect(); gsap.to(btn,{ x:(e.clientX-r.left-r.width/2)*0.35, y:(e.clientY-r.top-r.height/2)*0.35, duration:0.4, ease:'power2.out' }) }
+    const buttons = document.querySelectorAll('[data-magnetic]')
+    
+    buttons.forEach(btn => {
+      const onMove  = e => {
+        const r=btn.getBoundingClientRect()
+        gsap.to(btn,{ x:(e.clientX-r.left-r.width/2)*0.35, y:(e.clientY-r.top-r.height/2)*0.35, duration:0.4, ease:'power2.out' })
+      }
       const onLeave = () => gsap.to(btn, { x:0,y:0,duration:0.7,ease:'elastic.out(1,0.4)' })
+      
       btn.addEventListener('mousemove', onMove)
       btn.addEventListener('mouseleave', onLeave)
-      cleanup.push(() => { btn.removeEventListener('mousemove',onMove); btn.removeEventListener('mouseleave',onLeave) })
+      cleanup.push(() => { 
+        btn.removeEventListener('mousemove',onMove)
+        btn.removeEventListener('mouseleave',onLeave)
+      })
     })
+    
     return () => cleanup.forEach(f => f())
   }, [])
 
   useEffect(() => {
-    let st = null, st2 = null
     const ctx = gsap.context(async () => {
       const { default: SplitType } = await import('split-type')
       const splitTitle = new SplitType(titleRef.current, { types: 'chars' })
@@ -42,14 +50,18 @@ export default function Hero() {
         .fromTo(ctaRef.current, { y:22, opacity:0 }, { y:0, opacity:1, duration:0.8 }, 0.85)
         .fromTo(scrollRef.current, { opacity:0 }, { opacity:1, duration:1 }, 1.2)
 
-      st2 = gsap.to(overlayRef.current, {
+      gsap.to(overlayRef.current, {
         yPercent:28, opacity:0, ease:'none',
         scrollTrigger: { trigger:sectionRef.current, start:'top top', end:'bottom top', scrub:true },
       })
 
-      return () => { splitTitle.revert(); splitSub.revert() }
+      return () => {
+        splitTitle.revert()
+        splitSub.revert()
+      }
     }, sectionRef)
-    return () => { ctx.revert() }
+    
+    return () => ctx.revert()
   }, [])
 
   return (
